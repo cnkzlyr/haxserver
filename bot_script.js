@@ -1,7 +1,7 @@
 // =============================================================================
 // 🥩 KÖFTECİ YUSUF FUTSAL PRO BOT (v5.0 EXTRA AĞIR RACON EDITION)
 // 100% Hakiki Dana Eti Garantili, Otomatik 1v1 - 5v5 Ölçekleme, Şov Animasyonları,
-// Hız Radarı (km/h), Direk Titremesi, Altın Gol, MVP & En Ağır Halısaha Küfürleri
+// Hız Radarı (km/h), Altın Gol, MVP & En Ağır Halısaha Küfürleri
 // =============================================================================
 
 (function() {
@@ -89,17 +89,6 @@
         "SENİN SOL AYAĞINI DA SAĞ AYAĞINI DA KAFANI DA SİKEYİM KÖFTE BEYİNLİ PİÇ!"
     ];
 
-    var postReactions = [
-        "ÇAAAAATTT! DİREĞİ SİKTİ RESMEN SES MAHALLEYE GİTTİ AMINA KOYAYIM!",
-        "LAN DİREKTEN DÖNDÜ ANASINI SİKEYİM BÖYLE ŞANSIN BALINI SİKEYİM!",
-        "DİREK İNLEDİ AMK RESMEN KALE SALLANIYOR O NASIL FÜZEYDİ OROSPU EVLADI!",
-        "BALINI SİKEYİM SENİN KALE DİREĞİ KURTARDI GÖTÜNÜ OROSPU ÇOCUĞU!",
-        "ANASINI AVRADINI DİREĞİN BOYASI SÖKÜLDÜ LAN ÖYLE Mİ VURULUR PİÇ!",
-        "KALE DİREĞİNE VERİLMİŞ SADAKANIZ VARMIŞ AMK BALLI OROSPU ÇOCUKLARI!",
-        "DİREK KIRILDI AMINA KOYAYIM AZ DAHA YAVAŞ VURUN KALE YIKILACAK!",
-        "LAN O DİREK OLMASA TOP MARSA KADAR GİDİYORDU ANASINI SİKTİĞİM!"
-    ];
-
     var winReactions = [
         "EZDİK GEÇTİK AMINA KOYAYIM AĞLAMAYIN SİKTİRİN GİDİN DIŞARI!",
         "SÜZGEÇ ETTİK SİZİ AMK EVLATLARI GİDİN BİRAZ KUMDA OYNAYIN!",
@@ -148,21 +137,6 @@
             "BU ADAMIN KRAMPONUNU YAKIN, KÜLLERİNİ DE DENİZE SAVURUN!",
             "{s}, KALECİNE ÖZÜR BORCUN VAR, ÖNCE DE ANANA!"
         ],
-        post: [
-            "{s} DİREĞİ ÖYLE BİR ÇINLATTI Kİ YAN MAHALLEDE CAMLAR İNDİ!",
-            "KALECİNİN DUASI KABUL OLDU, DİREK KURTARDI GÖTÜNÜ!",
-            "DİREĞİN ANASINI SİKEYİM, GOLÜ YEDİ RESMEN!",
-            "{s}, BİR KARIŞ İÇERİ VURSAN EFSANE OLURDUN, ŞİMDİ SADECE BİR ZAVALLISIN!",
-            "DİREK BU MAÇIN EN İYİ DEFANSI AMK, KAPTANLIĞI ONA VERİN!",
-            "KALE DİREĞİNE SADAKA VERMİŞLER, YOKSA GOLDÜ BU AMINA KOYAYIM!",
-            "{s} DİREĞE VURDU, DİREK BİLE AĞLADI AMK!",
-            "ÇAAAT! O SES HALA KULAĞIMDA, DİREĞİN BOYASI SÖKÜLDÜ!"
-        ],
-        postIn: [
-            "DİREĞİ ÖPTÜ GİRDİ AMINA KOYAYIM, KALECİ SADECE SEYRETTİ!",
-            "{s} DİREKTEN İÇERİ SOKTU, DİREK BİLE ENGEL OLAMADI!",
-            "TOP DİREĞE SELAM VERDİ, AĞLARA YERLEŞTİ, KALECİYE DE NANİK YAPTI!"
-        ],
         save: [
             "{k} KALEDE DUVAR ÖRDÜ, {s} DUVARA TOSLADI AMK!",
             "{k} O TOPU ÇIKARDI, {s}'İN GURURUNU DA ÇIKARDI!",
@@ -180,7 +154,7 @@
             "{s} BİR SANTİM İÇERİ VURSA GOL, AYAĞINDAKİ CETVELİ SİKEYİM!",
             "AZ FARKLA DIŞARI! {s}'İN NİŞANCILIĞI KÖR TOPAL!",
             "{s}, GÖZLÜKÇÜYE GİT, KALE ORADA DURUYORDU AMK!",
-            "TOP DİREĞİ YALADI GİTTİ, {s}'İN ŞANSINI SİKEYİM!"
+            "TOP KALEYİ YALADI GİTTİ, {s}'İN ŞANSINI SİKEYİM!"
         ],
         win: [
             "EZDİK GEÇTİK, AĞLAMAYIN SİKTİRİN GİDİN İZLEYİCİYE!",
@@ -210,7 +184,7 @@
         return arr[k];
     }
     function react(type, names) {
-        var pool = (reactPools[type] || []).concat(type === "goal" ? goalReactions : type === "ownGoal" ? ownGoalReactions : type === "post" ? postReactions : type === "win" ? winReactions : []);
+        var pool = (reactPools[type] || []).concat(type === "goal" ? goalReactions : type === "ownGoal" ? ownGoalReactions : type === "win" ? winReactions : []);
         var line = drawFromBag(type, pool);
         names = names || {};
         line = line.replace(/\{s\}/g, (names.s || "BU ADAM").toLocaleUpperCase("tr-TR")).replace(/\{k\}/g, (names.k || "KALECİ").toLocaleUpperCase("tr-TR"));
@@ -408,23 +382,20 @@
     };
 
     // =========================================================================
-    // ⚽ TOP TAKİP MOTORU: Gerçek direk sekmesi, kaleyi bulan şut, kurtarış,
-    // kıl payı aut. Direk mesajı gol olursa İPTAL edilir (gol = direk denmez).
+    // ⚽ TOP TAKİP MOTORU: kaleyi bulan şut, kurtarış, kıl payı aut.
     // =========================================================================
     var lastBallSpeed = 0;          // km/h hesabı için (tick hızı * 3)
     var field = null;               // { goalX, goalHalf, posts:[{x,y,r}] }
     var prevBall = null;            // önceki tick topun durumu
     var lastToucher = null;         // en son dokunan (vuruş + gövde teması)
     var shotThreat = null;          // kaleyi bulan şut { defTeam, shooter, speed, tick }
-    var pendingPost = null;         // { tick, shooter, defTeam, speed }
-    var lastPostAt = -9999, lastSaveAt = -9999, lastMissAt = -9999, lastPostGoalTick = -9999;
+    var lastSaveAt = -9999, lastMissAt = -9999;
     var tickNo = 0;
 
     function resetBallTracking() {
         prevBall = null;
         lastToucher = null;
         shotThreat = null;
-        pendingPost = null;
     }
 
     function loadFieldGeometry() {
@@ -457,7 +428,6 @@
         if (shotThreat && player.team === shotThreat.defTeam && shotThreat.shooter && shotThreat.shooter.team !== player.team) {
             var st = shotThreat;
             shotThreat = null;
-            pendingPost = null;
             if (tickNo - lastSaveAt > 90) {
                 lastSaveAt = tickNo;
                 var kmh = Math.round(st.speed * 3 * 12.5);
@@ -503,21 +473,6 @@
         if (field && prevBall) {
             var pSpeed = Math.hypot(prevBall.xspeed, prevBall.yspeed);
 
-            // 2) DİREK: top direğe değiyor + hız vektörü sert biçimde değişti + yakında oyuncu yok
-            if (!toucher && pSpeed > 2.0) {
-                for (var i = 0; i < field.posts.length; i++) {
-                    var po = field.posts[i];
-                    var dist = Math.hypot(ball.x - po.x, ball.y - po.y);
-                    var dv = Math.hypot(ball.xspeed - prevBall.xspeed, ball.yspeed - prevBall.yspeed);
-                    if (dist <= po.r + ball.radius + 2.5 && dv > pSpeed * 0.45 && tickNo - lastPostAt > 150 && !pendingPost) {
-                        lastPostAt = tickNo;
-                        pendingPost = { tick: tickNo, shooter: lastToucher, defTeam: po.x < 0 ? 1 : 2, speed: pSpeed };
-                        shotThreat = null;
-                        break;
-                    }
-                }
-            }
-
             // 3) Kaleyi bulan şut tespiti (çizgiye ulaştığında ağların içine gidiyor mu?)
             if (!shotThreat && speed > 2.6 && Math.abs(ball.xspeed) > 0.8 && lastToucher) {
                 var dir = ball.xspeed > 0 ? 1 : -1;
@@ -536,28 +491,15 @@
             // 4) Kıl payı aut: kale çizgisini direğin hemen dışından geçti
             if (Math.abs(prevBall.x) <= field.goalX && Math.abs(ball.x) > field.goalX && pSpeed > 3) {
                 var ay = Math.abs(ball.y);
-                if (ay > field.goalHalf + ball.radius && ay < field.goalHalf + 28 && lastToucher && tickNo - lastMissAt > 180 && !pendingPost) {
+                if (ay > field.goalHalf + ball.radius && ay < field.goalHalf + 28 && lastToucher && tickNo - lastMissAt > 180) {
                     var missDef = ball.x < 0 ? 1 : 2;
                     if (lastToucher.team !== missDef) {
                         lastMissAt = tickNo;
-                        sendAnnouncement("😱 KIL PAYI DIŞARI! " + lastToucher.name + " direği yalayarak auta yolladı!", null, 0xFFA500, "bold", 1);
+                        sendAnnouncement("😱 KIL PAYI DIŞARI! " + lastToucher.name + " topu kalenin hemen yanından auta yolladı!", null, 0xFFA500, "bold", 1);
                         sendArgo(react("miss", { s: lastToucher.name }));
                     }
                 }
             }
-        }
-
-        // 5) Bekleyen direk olayını ~0.5 sn sonra, gol olmadıysa duyur
-        if (pendingPost && tickNo - pendingPost.tick >= 30) {
-            var pp = pendingPost;
-            pendingPost = null;
-            var who = pp.shooter ? pp.shooter.name : "Biri";
-            sendAnnouncement("💥 DİREK! " + who + " direği titretti, top dışarı döndü!", null, 0xFF4500, "bold", 2);
-            sendArgo(react("post", { s: who }));
-            try {
-                room.setDiscProperties(0, { color: 0xFF0033 });
-                addAnimTimeout(function() { try { room.setDiscProperties(0, { color: 0xFFEA00 }); } catch(e) {} }, 400);
-            } catch(e) {}
         }
 
         prevBall = { x: ball.x, y: ball.y, xspeed: ball.xspeed, yspeed: ball.yspeed };
@@ -620,8 +562,6 @@
         var conceedingTeam = team === 1 ? 2 : 1;
 
         var shotSpeedKmh = Math.round(lastBallSpeed * 12.5);
-        var wentInOffPost = !!pendingPost || (tickNo - lastPostAt < 60);
-        pendingPost = null;
         shotThreat = null;
 
         if (scorer) {
@@ -650,12 +590,7 @@
                     sendAnnouncement("💥💥💥 POKER! " + scorer.name + " 4. golünü attı, rakibi paramparça etti!", null, 0xFF0055, "bold", 2);
                 }
 
-                if (wentInOffPost) {
-                    sendAnnouncement("🎯 DİREKTEN İÇERİ!", null, 0xFF4500, "bold", 1);
-                    sendArgo(react("postIn", { s: scorer.name }));
-                } else {
-                    sendArgo(react("goal", { s: scorer.name }));
-                }
+                sendArgo(react("goal", { s: scorer.name }));
 
                 // 👑 Gol Atana Kral Kutlaması
                 try {
