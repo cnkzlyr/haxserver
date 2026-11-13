@@ -11,6 +11,7 @@
 """
 
 import os
+import re
 import sys
 import time
 import json
@@ -163,7 +164,9 @@ def main():
         try:
             req = urllib.request.urlopen(f"http://127.0.0.1:{port}/json")
             targets = json.loads(req.read().decode('utf-8'))
-            target = next((t for t in targets if "headless" in t.get("url", "") or t.get("type") == "page"), None)
+            target = next((t for t in targets if "haxball.com" in t.get("url", "") and t.get("type") == "page"), None)
+            if not target:
+                target = next((t for t in targets if "headless" in t.get("url", "")), None)
             if target and "webSocketDebuggerUrl" in target:
                 s = ws_connect(port, target["webSocketDebuggerUrl"])
                 break
@@ -176,11 +179,34 @@ def main():
         proc.terminate()
         return
 
-    final_bot_js = BOT_JS_TEMPLATE.replace('{token}', token)
+    bot_file = os.path.join(SCRIPT_DIR, "bot_script.js")
+    if os.path.exists(bot_file):
+        with open(bot_file, "r", encoding="utf-8") as f:
+            bot_code = f.read()
+    else:
+        bot_code = BOT_JS_TEMPLATE
+
+    final_bot_js = re.sub(r'token:\s*["\'][^"\']*["\']', f'token: "{token}"', bot_code)
 
     s.sendall(make_ws_frame(json.dumps({"id": 300, "method": "Runtime.enable"})))
     time.sleep(0.5)
-    ws_eval(s, final_bot_js, 301)
+
+    print("⏳ HaxBall motoru bekleniyor (HBInit)...")
+    hb_ready = False
+    for attempt in range(30):
+        res = ws_eval(s, "typeof window.HBInit", 301 + attempt)
+        if res == "function":
+            hb_ready = True
+            break
+        time.sleep(1)
+
+    if not hb_ready:
+        print("❌ HATA: HaxBall HBInit motoru zamanında yüklenemedi!")
+        proc.terminate()
+        return
+
+    print("⚡ Bot komut dosyası yükleniyor...")
+    ws_eval(s, final_bot_js, 400)
 
     print("\n" + "=" * 65)
     print("🚀 🥩 KÖFTECİ YUSUF FUTSAL SUNUCUNUZ YAYINDA!")
@@ -195,12 +221,20 @@ def main():
                 time.sleep(0.1)
                 continue
             data = json.loads(msg)
-            if data.get("method") == "Runtime.consoleAPICalled":
-                args = data.get("params", {}).get("args", [])
+            method = data.get("method")
+            if method == "Runtime.consoleAPICalled":
+                params = data.get("params", {})
+                msg_type = params.get("type", "log")
+                args = params.get("args", [])
                 texts = [str(a.get("value", "")) for a in args]
                 full_text = " ".join(texts)
-                if any(kw in full_text for kw in ["Oda Linki", "🥩", "⚡", "Admin", "GOOOL", "MAÇ BİTTİ", "Harita", "DİREK"]):
+                if msg_type in ["error", "warning"]:
+                    print(f"[{msg_type.upper()}] {full_text}")
+                elif any(kw in full_text for kw in ["Oda Linki", "🥩", "⚡", "Admin", "GOOOL", "MAÇ BİTTİ", "Harita", "DİREK", "http", "Room Link"]):
                     print(full_text)
+            elif method == "Runtime.exceptionThrown":
+                details = data.get("params", {}).get("exceptionDetails", {})
+                print(f"❌ JS İstisnası: {details.get('text', '')}")
     except KeyboardInterrupt:
         print("\nSunucu kapatılıyor...")
     finally:

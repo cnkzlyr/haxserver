@@ -5,7 +5,7 @@
 // =============================================================================
 
 (function() {
-    var targetHB = typeof HBInit !== "undefined" ? HBInit : (function() {
+    var targetHB = (typeof window !== "undefined" && window.HBInit) ? window.HBInit : (typeof HBInit !== "undefined" ? HBInit : (function() {
         var iframes = document.querySelectorAll('iframe');
         for (var i = 0; i < iframes.length; i++) {
             try {
@@ -15,7 +15,7 @@
             } catch(e) {}
         }
         return null;
-    })();
+    })());
 
     if (!targetHB) {
         console.error("❌ HBInit bulunamadı! Konsolun sol üstündeki 'top' menüsünden iframe'i seçin.");
